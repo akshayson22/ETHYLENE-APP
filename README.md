@@ -41,7 +41,7 @@ ethylene-avocado-webapp/
 1. **Navigate to the project directory:**
 
    ```sh
-   cd C:\Users\asonawane\Desktop\APP\ethylene-avocado-webapp
+   cd C:\....\.....\.....\......\ethylene-avocado-webapp
    ```
 
 2. **Create and activate a Python virtual environment (recommended):**
@@ -103,5 +103,6 @@ ethylene-avocado-webapp/
 ---
 
 ## License
+
 
 This project is for educational and research purposes. Please cite the original publication if you use the model in your work.
