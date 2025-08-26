@@ -1,0 +1,147 @@
+:root{
+  --bg1:#0f172a;
+  --bg2:#0b2b4a;
+  --glass: rgba(255,255,255,0.08);
+  --glass-strong: rgba(255,255,255,0.15);
+  --text:#e5f2ff;
+  --muted:#b7d3f3;
+  --accent:#7dd3fc;
+  --accent-2:#60a5fa;
+  --good:#90EE90;
+  --warn:#fca5a5;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  color:var(--text);
+  font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+  background: radial-gradient(1200px 800px at 10% 10%, var(--bg2), var(--bg1)) no-repeat fixed;
+  overflow-x:hidden;
+}
+
+.bg::before{
+  content:"";
+  position:fixed; inset:-20vmax;
+  background: conic-gradient(from 180deg at 50% 50%, #1e3a8a, #0ea5e9, #14b8a6, #1e3a8a);
+  filter: blur(120px) opacity(0.15);
+  z-index:-1;
+  animation: spin 30s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.header{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:24px clamp(16px,5vw,48px);
+}
+.brand{display:flex; align-items:center; gap:16px}
+.logo{
+  width:64px; height:64px; filter: drop-shadow(0 10px 18px rgba(0,0,0,0.4));
+  animation: float 4s ease-in-out infinite;
+}
+@keyframes float{
+  0%,100%{transform: translateY(0)}
+  50%{transform: translateY(-6px)}
+}
+.title-block h1{
+  margin:0; line-height:1.1; font-weight:800; letter-spacing:.2px;
+  font-size: clamp(22px, 3.2vw, 42px);
+}
+.title-block .sub{font-weight:400; color:var(--muted); font-size: .9em}
+
+.hero-icon{
+  width:90px; opacity:.9; animation: pop 800ms ease both;
+  filter: drop-shadow(0 10px 18px rgba(0,0,0,0.4));
+}
+@keyframes pop{from{transform:scale(.8); opacity:0} to{transform:scale(1); opacity:1}}
+
+.container{
+  padding: 0 clamp(16px,5vw,48px) 48px;
+  display:grid; gap:24px;
+}
+
+.card{
+  background: linear-gradient(180deg, var(--glass-strong), var(--glass));
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  padding:24px;
+  backdrop-filter: blur(8px);
+}
+.card-title{margin:0 0 14px 0}
+
+.grid{
+  display:grid; grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap:16px;
+}
+.field{
+  position:relative; background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.1); border-radius:14px; padding:12px 12px 18px;
+}
+.field label{display:block; font-size:14px; color:var(--muted); margin-bottom:6px}
+.field input{
+  width:100%; font-size:18px; font-weight:700; color:var(--text);
+  background:transparent; border:none; outline:none;
+}
+.field .unit{
+  position:absolute; right:12px; bottom:8px; font-size:12px; color:var(--muted);
+  opacity:.9;
+}
+
+.actions{
+  grid-column: 1 / -1;
+  display:flex; gap:12px; justify-content:flex-start; margin-top:8px;
+}
+
+.btn{
+  border:1px solid rgba(255,255,255,0.18);
+  background:linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.05));
+  color:var(--text); padding:12px 16px; border-radius:999px;
+  font-weight:800; letter-spacing:.2px; cursor:pointer;
+  transition: transform .12s ease, background .2s ease, box-shadow .2s ease;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+}
+.btn:hover{transform: translateY(-1px) scale(1.01)}
+.btn.primary{background:linear-gradient(90deg, var(--accent), var(--accent-2))}
+.btn.ghost{background:transparent}
+
+.alert{
+  background: rgba(255, 99, 71, 0.12);
+  border: 1px solid rgba(255, 99, 71, 0.35);
+  color: #ffecec;
+  padding: 12px 14px; border-radius:12px; margin-bottom:14px;
+}
+.alert-item{padding:4px 0}
+
+.plots{
+  display:grid; grid-template-columns: repeat(2, minmax(300px, 1fr));
+  gap:24px;
+}
+.plot-card{
+  background: linear-gradient(180deg, var(--glass-strong), var(--glass));
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:20px; padding:16px; backdrop-filter: blur(8px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+.plot-card h3{margin-top:0}
+.plot-card img{width:100%; height:auto; border-radius:12px; display:block}
+
+.empty-state{
+  grid-column:1 / -1; text-align:center; padding:36px 0; color:var(--muted);
+}
+
+.footer{
+  padding: 16px clamp(16px,5vw,48px) 40px; color:var(--muted);
+}
+.cite a{color:var(--accent)}
+
+.fade-in{animation: fade .6s ease both}
+.pop-in{animation: pop .6s ease both}
+.pop-in.delay{animation-delay:.15s}
+.slide-down{animation: slidedown .35s ease both}
+.tilt-in{animation: tiltin .6s ease both}
+
+@keyframes fade{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
+@keyframes slidedown{from{opacity:0; transform:translateY(-6px)} to{opacity:1; transform:none}}
+@keyframes tiltin{from{opacity:0; transform:rotateX(6deg) translateY(-6px)} to{opacity:1; transform:none}}
