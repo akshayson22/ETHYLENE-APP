@@ -1,6 +1,6 @@
 # Ethylene Simulation Inside Avocado Package - Web Application
 
-This project is a web-based adaptation of the scientific model developed by **Dr. Akshay Sonawane** at ATB Potsdam to simulate gas concentrations in modified atmosphere packaging (MAP) for avocados. It converts the original `tkinter` desktop application into a user-friendly web interface that can run locally on your machine.
+This project is a web-based adaptation of the scientific model developed by **Dr. Akshay Sonawane** at ATB Potsdam to simulate gas concentrations in modified atmosphere packaging (MAP) for avocados. It converts the original `tkinter` desktop application into a user-friendly web interface that can run locally on your machine. This web app can also be easily published on AWS Elastic Beanstalk (EB) with all the required files located in the ethylene-avocado-webapp.
 
 The application predicts the concentration of **ethylene (C₂H₄)**, **oxygen (O₂)**, and **carbon dioxide (CO₂)** inside an avocado package over a defined storage period, considering parameters such as fruit mass, temperature, package perforations, and the presence of an ethylene scavenger.
 
@@ -24,6 +24,7 @@ ethylene-avocado-webapp/
 ├── app.py
 ├── calculations.py
 ├── requirements.txt
+├── Procfile
 ├── templates/
 │   ├── base.html
 │   └── index.html
@@ -106,3 +107,4 @@ ethylene-avocado-webapp/
 
 
 This project is for educational and research purposes. Please cite the original publication if you use the model in your work.
+
