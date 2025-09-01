@@ -20,7 +20,6 @@ This work is based on the model published in *Postharvest Biology and Technology
 
 ## File Structure
 
-ethylene-avocado-webapp/
 ├── app.py
 ├── calculations.py
 ├── requirements.txt
@@ -107,4 +106,5 @@ ethylene-avocado-webapp/
 
 
 This project is for educational and research purposes. Please cite the original publication if you use the model in your work.
+
 
