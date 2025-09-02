@@ -131,22 +131,27 @@ body{
   grid-column:1 / -1; text-align:center; padding:36px 0; color:var(--muted);
 }
 
-.footer{
+/* Footer styles */
+.footer {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
   padding: 16px clamp(16px,5vw,48px) 40px;
   color: var(--muted);
-  flex-wrap: wrap;
 }
 
 .version-info {
   text-align: left;
+  margin-top: 10px;
+  order: 2; /* Makes this appear second */
 }
 
 .version-info small {
   opacity: 0.8;
   font-size: 0.85em;
+}
+
+.cite {
+  order: 1; /* Makes this appear first */
 }
 
 .cite a {
@@ -193,3 +198,4 @@ body{
 @keyframes fade{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
 @keyframes slidedown{from{opacity:0; transform:translateY(-6px)} to{opacity:1; transform:none}}
 @keyframes tiltin{from{opacity:0; transform:rotateX(6deg) translateY(-6px)} to{opacity:1; transform:none}}
+
