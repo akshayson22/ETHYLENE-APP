@@ -132,32 +132,16 @@ body{
 }
 
 .footer{
-  padding: 16px clamp(16px,5vw,48px) 40px; color:var(--muted);
-}
-.cite a{color:var(--accent)}
-
-.fade-in{animation: fade .6s ease both}
-.pop-in{animation: pop .6s ease both}
-.pop-in.delay{animation-delay:.15s}
-.slide-down{animation: slidedown .35s ease both}
-.tilt-in{animation: tiltin .6s ease both}
-
-@keyframes fade{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
-@keyframes slidedown{from{opacity:0; transform:translateY(-6px)} to{opacity:1; transform:none}}
-@keyframes tiltin{from{opacity:0; transform:rotateX(6deg) translateY(-6px)} to{opacity:1; transform:none}}
-
-/* Footer styles */
-.footer {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: center;
   padding: 16px clamp(16px,5vw,48px) 40px;
   color: var(--muted);
+  flex-wrap: wrap;
 }
 
 .version-info {
-  text-align: right;
-  margin-top: 10px;
+  text-align: left;
 }
 
 .version-info small {
@@ -167,6 +151,11 @@ body{
 
 .cite a {
   color: var(--accent);
+  text-decoration: none;
+}
+
+.cite a:hover {
+  text-decoration: underline;
 }
 
 /* Additional styles for scavenger summary */
@@ -194,3 +183,13 @@ body{
 .kv b {
   color: var(--text);
 }
+
+.fade-in{animation: fade .6s ease both}
+.pop-in{animation: pop .6s ease both}
+.pop-in.delay{animation-delay:.15s}
+.slide-down{animation: slidedown .35s ease both}
+.tilt-in{animation: tiltin .6s ease both}
+
+@keyframes fade{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
+@keyframes slidedown{from{opacity:0; transform:translateY(-6px)} to{opacity:1; transform:none}}
+@keyframes tiltin{from{opacity:0; transform:rotateX(6deg) translateY(-6px)} to{opacity:1; transform:none}}
