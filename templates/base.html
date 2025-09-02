@@ -11,12 +11,11 @@
   <div class="bg"></div>
   <header class="header">
     <div class="brand">
-      <img src="{{ url_for('static', filename='img/logo.svg') }}" alt="Logo" class="logo" />
-      <div class="title-block">
+      <img src="{{ url_for('static', filename='img/avocado.svg') }}" alt="Logo" class="logo" onclick="location.reload()" style="cursor:pointer;" />
+      <div class="title-block" onclick="location.reload()" style="cursor:pointer;">
         <h1>Ethylene Simulation<br><span class="sub">Inside Avocado Package</span></h1>
       </div>
     </div>
-    <img src="{{ url_for('static', filename='img/avocado.svg') }}" alt="Avocado" class="hero-icon" />
   </header>
 
   <main class="container">
@@ -24,16 +23,15 @@
   </main>
 
   <footer class="footer">
-    <div class="cite">
-      <p>
-        Sonawane et al. (2024). A model integrating fruit physiology, perforation, and scavenger for prediction of ethylene accumulation in fruit packages. <em>Postharvest Biology and Technology</em>, 209, 112734.
-      </p>
-      <p>
-        <a href="https://doi.org/10.1016/j.postharvbio.2023.112734" target="_blank" rel="noopener">https://doi.org/10.1016/j.postharvbio.2023.112734</a>
-      </p>
-    </div>
     <div class="version-info">
       <small>Version 1.1 | © 2025 All rights reserved</small>
+    </div>
+    <div class="cite">
+      <p>
+        <a href="https://doi.org/10.1016/j.postharvbio.2023.112734" target="_blank" rel="noopener">
+          Sonawane et al. (2024). A model integrating fruit physiology, perforation, and scavenger for prediction of ethylene accumulation in fruit packages. Postharvest Biology and Technology, 209, 112734.
+        </a>
+      </p>
     </div>
   </footer>
 </body>
