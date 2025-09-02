@@ -194,8 +194,3 @@ body{
 .kv b {
   color: var(--text);
 }
-
-.cite a {
-  color: var(--accent);
-}
-
