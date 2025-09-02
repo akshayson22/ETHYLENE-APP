@@ -146,6 +146,7 @@ body{
 @keyframes slidedown{from{opacity:0; transform:translateY(-6px)} to{opacity:1; transform:none}}
 @keyframes tiltin{from{opacity:0; transform:rotateX(6deg) translateY(-6px)} to{opacity:1; transform:none}}
 
+/* Footer styles */
 .footer {
   display: flex;
   justify-content: space-between;
@@ -154,7 +155,12 @@ body{
   color: var(--muted);
 }
 
-.footer small {
+.version-info {
+  text-align: right;
+  margin-top: 10px;
+}
+
+.version-info small {
   opacity: 0.8;
   font-size: 0.85em;
 }
@@ -162,3 +168,34 @@ body{
 .cite a {
   color: var(--accent);
 }
+
+/* Additional styles for scavenger summary */
+.kv {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.kv li {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.kv li:last-child {
+  border-bottom: none;
+}
+
+.kv span {
+  color: var(--muted);
+}
+
+.kv b {
+  color: var(--text);
+}
+
+.cite a {
+  color: var(--accent);
+}
+
