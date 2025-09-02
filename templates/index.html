@@ -79,7 +79,7 @@
     {% endif %}
   </section>
 
-    {% if extra_info and (extra_info.scavenger_done_day is not none or extra_info.rem_scavenger_capacity_ppm is not none) %}
+  {% if extra_info and (extra_info.scavenger_done_day is not none or extra_info.rem_scavenger_capacity_ppm is not none) %}
   <section class="card info tilt-in">
     <h2 class="card-title">Scavenger Summary</h2>
     <ul class="kv">
@@ -95,4 +95,5 @@
     </p>
   </section>
   {% endif %}
+
 
