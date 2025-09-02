@@ -6,4 +6,20 @@ document.addEventListener("DOMContentLoaded", () => {
     b.addEventListener("mouseup", () => b.style.transform = "");
     b.addEventListener("mouseleave", () => b.style.transform = "");
   });
+
+  // Add click handler for header refresh
+  const headerLogo = document.querySelector(".logo");
+  const headerTitle = document.querySelector(".title-block");
+  
+  if (headerLogo) {
+    headerLogo.addEventListener("click", () => {
+      location.reload();
+    });
+  }
+  
+  if (headerTitle) {
+    headerTitle.addEventListener("click", () => {
+      location.reload();
+    });
+  }
 });
