@@ -37,7 +37,7 @@ body{
 }
 .brand{display:flex; align-items:center; gap:16px}
 .logo{
-  width:64px; height:64px; filter: drop-shadow(0 10px 18px rgba(0,0,0,0.4));
+  width:80px; height:80px; filter: drop-shadow(0 10px 18px rgba(0,0,0,0.4));
   animation: float 4s ease-in-out infinite;
 }
 @keyframes float{
@@ -198,4 +198,5 @@ body{
 @keyframes fade{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
 @keyframes slidedown{from{opacity:0; transform:translateY(-6px)} to{opacity:1; transform:none}}
 @keyframes tiltin{from{opacity:0; transform:rotateX(6deg) translateY(-6px)} to{opacity:1; transform:none}}
+
 
