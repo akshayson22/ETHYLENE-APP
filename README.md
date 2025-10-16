@@ -1,8 +1,8 @@
-# Ethylene Simulation Inside Avocado Package - Web Application
+# 🌐 Ethylene Simulation Inside Avocado Package - Web Application 🚀
 
 **Live App:** [https://ethylene-simulator-in-package-f855cb754629.herokuapp.com/](https://ethylene-simulator-in-package-f855cb754629.herokuapp.com/)
 
-This project is a web-based adaptation of the scientific model developed by **Dr. Akshay Sonawane** at ATB Potsdam to simulate gas concentrations in modified atmosphere packaging (MAP) for avocados. It converts the original `tkinter` desktop application into a user-friendly web interface that can run locally on your machine. This web app can also be deployed on AWS Elastic Beanstalk (EB) with all necessary files included in the `ethylene-avocado-webapp` directory.
+This project is a web-based adaptation of the scientific model developed by **Dr. Akshay Sonawane** at ATB Potsdam to simulate gas concentrations in modified atmosphere packaging (MAP) for avocados. It converts the original `tkinter` desktop application into a user-friendly web interface that can run locally or be deployed on AWS Elastic Beanstalk.
 
 The application predicts the concentration of **ethylene (C₂H₄)**, **oxygen (O₂)**, and **carbon dioxide (CO₂)** inside an avocado package over a defined storage period, considering parameters such as fruit mass, temperature, package perforations, and the presence of an ethylene scavenger.
 
@@ -13,20 +13,31 @@ This work is based on the model published in *Postharvest Biology and Technology
 
 ---
 
-## Project History
+## ⚙️ Project History
 
-The project was originally developed in **Matlab** and later converted into **Python** with a GUI, which has now been further adapted into a **web application**.
+Originally developed in **Matlab**, then converted to **Python** with a GUI, and finally adapted as a **web application** for easier use and visualization.
+
+**Screenshots & Graphics:**
+
+![Web App Main Screen](static/img/avocado.svg)
+*Main interface of the web application.*
+
+![Gas Concentration Graph](static/img/graph_example.png)
+*Predicted gas concentrations over time.*
+
+![Workflow Diagram](static/img/workflow.png)
+*Workflow diagram showing input, simulation, and output.*
 
 ---
 
-## Prerequisites
+## 🌐 Prerequisites
 
 * Python 3.7 or newer
-* A modern web browser (Chrome, Firefox, Edge, etc.)
+* Modern web browser (Chrome, Firefox, Edge, etc.)
 
 ---
 
-## File Structure
+## 📂 File Structure
 
 ```
 ethylene-avocado-webapp/
@@ -44,12 +55,14 @@ ethylene-avocado-webapp/
     │   └── script.js
     └── img/
         ├── logo.svg
-        └── avocado.svg
+        ├── avocado.svg
+        ├── graph_example.png
+        └── workflow.png
 ```
 
 ---
 
-## Installation
+## ⚙️ Installation
 
 1. **Navigate to the project directory:**
 
@@ -57,14 +70,14 @@ ethylene-avocado-webapp/
 cd C:\path\to\ethylene-avocado-webapp
 ```
 
-2. **Create and activate a Python virtual environment (recommended):**
+2. **Create and activate a Python virtual environment:**
 
 ```sh
-# For Windows
+# Windows
 python -m venv venv
 venv\Scripts\activate
 
-# For macOS/Linux
+# macOS/Linux
 python3 -m venv venv
 source venv/bin/activate
 ```
@@ -75,7 +88,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-**`requirements.txt` content:**
+**Example `requirements.txt` content:**
 
 ```
 Flask==3.0.3
@@ -86,33 +99,39 @@ Pillow==10.3.0
 
 ---
 
-## Running the Application
+## 🚀 Running the Application
 
-1. Ensure you are in the project directory and your virtual environment is activated.
-2. Run the Flask application:
+1. Ensure your virtual environment is activated.
+2. Run the Flask server:
 
 ```sh
 python app.py
 ```
 
-3. The terminal will indicate that the server is running, typically on `http://127.0.0.1:5000`.
-4. Open your browser and navigate to:
-
-[http://127.0.0.1:5000](http://127.0.0.1:5000)
+3. Open your browser and navigate to [http://127.0.0.1:5000](http://127.0.0.1:5000)
 
 ---
 
-## Using the Web Application
+## ⚙️ Using the Web Application
 
-1. The page loads with default values in the **Input Parameters** form.
-2. Adjust the input parameters (e.g., fruit mass, temperature, storage time) according to your simulation needs.
-3. Click the **"Update Plots"** button to run the simulation.
-4. The graphs display the predicted gas concentrations over the selected storage period.
-5. If an input is outside the model’s valid range, a warning message will appear below the form.
-6. Click **"Reset"** to clear all inputs and reset the plots.
+1. Adjust the **Input Parameters** form (fruit mass, temperature, storage time, etc.).
+2. Click **"Update Plots"** to run the simulation.
+3. Graphs display predicted ethylene, oxygen, and carbon dioxide concentrations.
+
+**Example Graph:**
+
+![Gas Concentration Over Time](static/img/graph_example.png)
+
+4. Warnings appear if input parameters are outside the valid model range.
+5. Use **"Reset"** to clear inputs and plots.
+
+**Visual Guide:**
+
+![Step-by-step Instructions](static/img/steps.png)
+*Graphical guide to using the application.*
 
 ---
 
-## License
+## 📄 License
 
-This project is intended for educational and research purposes. Please cite the original publication if you use the model in your work.
+This project is intended for **educational and research purposes**. Please cite the original publication if using the model.
