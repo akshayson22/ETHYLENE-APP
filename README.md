@@ -13,6 +13,8 @@ This work is based on the model published in *Postharvest Biology and Technology
 > [https://doi.org/10.1016/j.postharvbio.2023.112734](https://doi.org/10.1016/j.postharvbio.2023.112734)
 
 ---
+# Project was first developed in Matlab, then later converted to Python and a GUI. 
+
 
 ## Prerequisites
 
@@ -109,6 +111,7 @@ This work is based on the model published in *Postharvest Biology and Technology
 
 
 This project is for educational and research purposes. Please cite the original publication if you use the model in your work.
+
 
 
 
