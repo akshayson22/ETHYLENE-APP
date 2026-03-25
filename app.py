@@ -6,7 +6,10 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from calculations import run_simulation
 
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    static_url_path="/ethyleneprediction/static"
+)
 
 def plot_to_base64(figure):
     buf = io.BytesIO()
