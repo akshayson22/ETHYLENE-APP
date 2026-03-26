@@ -1,24 +1,22 @@
-// subtle UI niceties
 document.addEventListener("DOMContentLoaded", () => {
-  const btns = document.querySelectorAll(".btn");
-  btns.forEach(b => {
-    b.addEventListener("mousedown", () => b.style.transform = "translateY(1px) scale(0.995)");
-    b.addEventListener("mouseup", () => b.style.transform = "");
-    b.addEventListener("mouseleave", () => b.style.transform = "");
+  const actionButtons = document.querySelectorAll(".btn");
+  actionButtons.forEach((button) => {
+    button.addEventListener("mousedown", () => {
+      button.style.transform = "translateY(1px) scale(0.995)";
+    });
+
+    button.addEventListener("mouseup", () => {
+      button.style.transform = "";
+    });
+
+    button.addEventListener("mouseleave", () => {
+      button.style.transform = "";
+    });
   });
 
-  // Add click handler for header refresh
-  const headerLogo = document.querySelector(".logo");
-  const headerTitle = document.querySelector(".title-block");
-  
-  if (headerLogo) {
-    headerLogo.addEventListener("click", () => {
-      location.reload();
-    });
-  }
-  
-  if (headerTitle) {
-    headerTitle.addEventListener("click", () => {
+  const brandHome = document.querySelector(".brand-home");
+  if (brandHome) {
+    brandHome.addEventListener("click", () => {
       location.reload();
     });
   }
