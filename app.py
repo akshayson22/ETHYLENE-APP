@@ -1,6 +1,7 @@
 from datetime import datetime
 from pathlib import Path
 import os
+import tempfile
 
 from flask import Flask, render_template, request
 import io
@@ -15,7 +16,8 @@ app = Flask(
     static_url_path="/ethyleneprediction/static"
 )
 
-EMAIL_LOG_PATH = Path(__file__).resolve().parent / "email_submission_log.txt"
+EMAIL_LOG_FILENAME = "email_submission_log.txt"
+EMAIL_LOG_HEADER = "# Timestamp (ISO 8601 with timezone)\tEmail\n"
 
 def plot_to_base64(figure):
     buf = io.BytesIO()
@@ -24,10 +26,48 @@ def plot_to_base64(figure):
     buf.seek(0)
     return base64.b64encode(buf.read()).decode("utf-8")
 
+def iter_email_log_paths():
+    seen = set()
+    configured_path = os.environ.get("EMAIL_LOG_PATH", "").strip()
+    candidates = []
+
+    if configured_path:
+        candidates.append(Path(configured_path).expanduser())
+
+    candidates.extend([
+        Path(__file__).resolve().parent / EMAIL_LOG_FILENAME,
+        Path(app.instance_path) / EMAIL_LOG_FILENAME,
+        Path.cwd() / EMAIL_LOG_FILENAME,
+        Path(tempfile.gettempdir()) / EMAIL_LOG_FILENAME,
+    ])
+
+    for candidate in candidates:
+        resolved = str(candidate)
+        if resolved in seen:
+            continue
+        seen.add(resolved)
+        yield candidate
+
 def append_email_submission(email):
     timestamp = datetime.now().astimezone().isoformat(timespec="seconds")
-    with EMAIL_LOG_PATH.open("a", encoding="utf-8") as log_file:
-        log_file.write(f"{timestamp}\t{email}\n")
+    entry = f"{timestamp}\t{email}\n"
+    last_error = None
+
+    # Try the project log first, then fall back to writable runtime locations.
+    for log_path in iter_email_log_paths():
+        try:
+            log_path.parent.mkdir(parents=True, exist_ok=True)
+            file_exists = log_path.exists()
+            with log_path.open("a", encoding="utf-8") as log_file:
+                if not file_exists:
+                    log_file.write(EMAIL_LOG_HEADER)
+                log_file.write(entry)
+            app.logger.info("Logged email submission to %s", log_path)
+            return
+        except OSError as exc:
+            last_error = exc
+
+    app.logger.warning("Failed to log email submission for %s: %s", email, last_error)
 
 @app.route("/", methods=["GET", "POST"])
 def index():
