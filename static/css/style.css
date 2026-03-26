@@ -448,6 +448,103 @@ a {
   line-height: 1.6;
 }
 
+.modal-overlay[hidden] {
+  display: none;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(2, 11, 17, 0.78);
+  backdrop-filter: blur(8px);
+}
+
+.modal-card {
+  position: relative;
+  width: min(100%, 460px);
+  padding: 28px;
+  border: 1px solid var(--line-strong);
+  border-radius: 26px;
+  background:
+    linear-gradient(180deg, rgba(13, 32, 45, 0.98), rgba(8, 22, 31, 0.98)),
+    radial-gradient(circle at top left, rgba(116, 235, 231, 0.12), transparent 42%);
+  box-shadow: 0 36px 90px rgba(0, 0, 0, 0.5);
+}
+
+.modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(121, 218, 222, 0.18);
+  border-radius: 999px;
+  background: rgba(12, 28, 39, 0.92);
+  color: var(--text);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.modal-title {
+  margin: 0 42px 10px 0;
+  font-family: "Segoe UI Variable Display", "Bahnschrift", sans-serif;
+  font-size: 1.55rem;
+  line-height: 1.1;
+}
+
+.modal-copy {
+  margin: 0 0 18px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.modal-form {
+  display: grid;
+  gap: 14px;
+}
+
+.modal-label {
+  color: #bad4db;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.modal-form input {
+  width: 100%;
+  min-height: 60px;
+  padding: 0 18px;
+  border: 1px solid rgba(114, 170, 180, 0.18);
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(8, 24, 34, 0.98), rgba(7, 18, 26, 0.98));
+  color: var(--text);
+  font-size: 1.05rem;
+  outline: none;
+}
+
+.modal-form input::placeholder {
+  color: rgba(149, 172, 183, 0.8);
+}
+
+.modal-form input:focus-visible,
+.modal-close:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.modal-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 2px;
+}
+
 .brand-home:focus-visible,
 .btn:focus-visible,
 .field input:focus-visible {
@@ -586,6 +683,14 @@ a {
   .plot-frame {
     min-height: 220px;
     padding: 10px;
+  }
+
+  .modal-card {
+    padding: 22px;
+  }
+
+  .modal-actions {
+    grid-template-columns: 1fr;
   }
 
   .kv li {

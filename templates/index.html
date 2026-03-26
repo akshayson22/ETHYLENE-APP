@@ -6,6 +6,8 @@
         <h2 class="card-title">Model Inputs</h2>
 
         <form method="post" class="input-form">
+          <input type="hidden" name="collector_email" value="" />
+
           <div class="field-stack">
             <div class="field">
               <label>Fruit Mass</label>
@@ -113,6 +115,24 @@
           </p>
         </section>
       {% endif %}
+    </div>
+  </div>
+
+  <div class="modal-overlay" data-email-modal hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="email-modal-title">
+      <button type="button" class="modal-close" data-email-cancel aria-label="Close email prompt">&times;</button>
+      <h2 id="email-modal-title" class="modal-title">Enter email address</h2>
+      <p class="modal-copy">Please provide your email before running the analysis.</p>
+
+      <form class="modal-form" data-email-modal-form>
+        <label class="modal-label" for="analysis-email">Email address</label>
+        <input id="analysis-email" name="modal_email" type="email" autocomplete="email" placeholder="name@example.com" required />
+
+        <div class="modal-actions">
+          <button type="button" class="btn ghost" data-email-cancel>Cancel</button>
+          <button type="submit" class="btn primary">Continue to Analysis</button>
+        </div>
+      </form>
     </div>
   </div>
 {% endblock %}

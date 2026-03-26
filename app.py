@@ -1,3 +1,7 @@
+from datetime import datetime
+from pathlib import Path
+import os
+
 from flask import Flask, render_template, request
 import io
 import base64
@@ -11,12 +15,19 @@ app = Flask(
     static_url_path="/ethyleneprediction/static"
 )
 
+EMAIL_LOG_PATH = Path(__file__).resolve().parent / "email_submission_log.txt"
+
 def plot_to_base64(figure):
     buf = io.BytesIO()
     figure.savefig(buf, format="png", dpi=150, bbox_inches="tight")
     plt.close(figure)
     buf.seek(0)
     return base64.b64encode(buf.read()).decode("utf-8")
+
+def append_email_submission(email):
+    timestamp = datetime.now().astimezone().isoformat(timespec="seconds")
+    with EMAIL_LOG_PATH.open("a", encoding="utf-8") as log_file:
+        log_file.write(f"{timestamp}\t{email}\n")
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -43,6 +54,12 @@ def index():
 
         # Collect values
         try:
+            collector_email = request.form.get("collector_email", "").strip()
+            if not collector_email:
+                raise ValueError("Email address is required before updating plots.")
+
+            append_email_submission(collector_email)
+
             fields["Wp"] = request.form.get("Wp", "").strip()
             fields["StorageTemperature"] = request.form.get("StorageTemperature", "").strip()
             fields["Perforationdiamicron"] = request.form.get("Perforationdiamicron", "").strip()
