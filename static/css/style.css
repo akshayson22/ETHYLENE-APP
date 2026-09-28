@@ -702,3 +702,37 @@ a {
     text-align: left;
   }
 }
+
+@media (max-width: 420px) {
+  .app-shell {
+    width: calc(100vw - 12px);
+  }
+
+  .topbar-meta,
+  .meta-pill,
+  .btn {
+    width: 100%;
+  }
+
+  .meta-pill {
+    justify-content: center;
+    padding-inline: 12px;
+    text-align: center;
+  }
+
+  .field,
+  .plot-card {
+    padding-inline: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

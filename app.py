@@ -1,9 +1,13 @@
 from datetime import datetime
 from pathlib import Path
 import os
+import re
 import tempfile
+import threading
+import time
+from collections import OrderedDict, deque
 
-from flask import Flask, render_template, request
+from flask import Flask, jsonify, render_template, request
 import io
 import base64
 import matplotlib
@@ -15,9 +19,86 @@ app = Flask(
     __name__,
     static_url_path="/ethyleneprediction/static"
 )
+app.config["MAX_CONTENT_LENGTH"] = 64 * 1024
 
 EMAIL_LOG_FILENAME = "email_submission_log.txt"
 EMAIL_LOG_HEADER = "# Timestamp (ISO 8601 with timezone)\tEmail\n"
+EMAIL_RE = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
+
+
+def release_sha():
+    configured = os.environ.get("APP_RELEASE_SHA", "").strip()
+    if configured:
+        return configured
+    git_dir = Path(__file__).resolve().parent / ".git"
+    try:
+        head = (git_dir / "HEAD").read_text(encoding="utf-8").strip()
+        if not head.startswith("ref: "):
+            return head
+        reference = head[5:]
+        loose = git_dir / reference
+        if loose.is_file():
+            return loose.read_text(encoding="utf-8").strip()
+        for line in (git_dir / "packed-refs").read_text(encoding="utf-8").splitlines():
+            if line.endswith(f" {reference}"):
+                return line.split(" ", 1)[0]
+    except (OSError, ValueError):
+        pass
+    return "unknown"
+
+
+class BoundedRateLimiter:
+    def __init__(self, max_clients=2048):
+        self.max_clients = max_clients
+        self._clients = OrderedDict()
+        self._lock = threading.Lock()
+
+    def allow(self, key, limit=12, window_seconds=60):
+        now = time.monotonic()
+        with self._lock:
+            events = self._clients.pop(key, deque())
+            while events and now - events[0] >= window_seconds:
+                events.popleft()
+            allowed = len(events) < limit
+            if allowed:
+                events.append(now)
+            self._clients[key] = events
+            while len(self._clients) > self.max_clients:
+                self._clients.popitem(last=False)
+            return allowed
+
+
+request_limiter = BoundedRateLimiter()
+
+
+def request_client_key():
+    """Return the client address appended by the directly connected proxy."""
+    forwarded_for = request.headers.get("X-Forwarded-For", "")
+    if forwarded_for:
+        return forwarded_for.rsplit(",", 1)[-1].strip() or "unknown"
+    return request.remote_addr or "unknown"
+
+
+@app.before_request
+def enforce_rate_limit():
+    if request.method != "POST":
+        return None
+    client = request_client_key()
+    if request_limiter.allow(client):
+        return None
+    response = jsonify(error="Too many requests. Please wait briefly and try again.")
+    response.status_code = 429
+    response.headers["Retry-After"] = "60"
+    return response
+
+
+@app.after_request
+def apply_security_headers(response):
+    response.headers.setdefault("X-Content-Type-Options", "nosniff")
+    response.headers.setdefault("X-Frame-Options", "SAMEORIGIN")
+    response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+    response.headers.setdefault("Permissions-Policy", "camera=(), microphone=(), geolocation=()")
+    return response
 
 def plot_to_base64(figure):
     buf = io.BytesIO()
@@ -95,10 +176,8 @@ def index():
         # Collect values
         try:
             collector_email = request.form.get("collector_email", "").strip()
-            if not collector_email:
-                raise ValueError("Email address is required before updating plots.")
-
-            append_email_submission(collector_email)
+            if len(collector_email) > 254 or not EMAIL_RE.fullmatch(collector_email):
+                raise ValueError("A valid email address is required before updating plots.")
 
             fields["Wp"] = request.form.get("Wp", "").strip()
             fields["StorageTemperature"] = request.form.get("StorageTemperature", "").strip()
@@ -123,6 +202,7 @@ def index():
             errors = result.get("errors", [])
 
             if not errors:
+                append_email_submission(collector_email)
                 # Plot 1: O2 + CO2
                 fig1 = plt.figure(figsize=(6, 4))
                 ax1 = fig1.add_subplot(111)
@@ -152,8 +232,9 @@ def index():
 
         except ValueError as ve:
             errors = [str(ve)]
-        except Exception as e:
-            errors = [f"Unexpected error: {str(e)}"]
+        except Exception:
+            app.logger.exception("Unexpected simulation request failure")
+            errors = ["Unexpected server error while running the simulation."]
 
     return render_template(
         "index.html",
@@ -163,6 +244,11 @@ def index():
         plot2_b64=plot2_b64,
         extra_info=extra_info
     )
+
+
+@app.get("/health")
+def health():
+    return jsonify(status="ok", release_sha=release_sha())
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))

@@ -4,3 +4,8 @@
 !.env.example
 venv/
 __pycache__/
+.pytest_cache/
+.coverage
+email_submission_log.txt
+.pytest-codex-*/
+pytest-cache-files-*/
