@@ -2,13 +2,13 @@
 
 **Live App:** [https://ethylene-simulator-in-package-f855cb754629.herokuapp.com/](https://ethylene-simulator-in-package-f855cb754629.herokuapp.com/)
 
-This project is a web-based adaptation of the scientific model developed by **Dr. Akshay Sonawane** at ATB Potsdam to simulate gas concentrations in modified atmosphere packaging (MAP) for avocados. It converts the original `tkinter` desktop application into a user-friendly web interface that can run locally or be deployed on AWS Elastic Beanstalk.
+This project is a web-based scientific model for simulating gas concentrations in modified-atmosphere packaging (MAP) for avocados. It converts the validated desktop calculation workflow into a user-friendly web interface suitable for local use or container deployment.
 
 The application predicts the concentration of **ethylene (C₂H₄)**, **oxygen (O₂)**, and **carbon dioxide (CO₂)** inside an avocado package over a defined storage period, considering parameters such as fruit mass, temperature, package perforations, and the presence of an ethylene scavenger.
 
 This work is based on the model published in *Postharvest Biology and Technology*:
 
-> Sonawane et al (2024). A model integrating fruit physiology, perforation, and scavenger for prediction of ethylene accumulation in fruit packages. *Postharvest Biology and Technology, 209*, 112734.
+> “A model integrating fruit physiology, perforation, and scavenger for prediction of ethylene accumulation in fruit packages.” *Postharvest Biology and Technology, 209* (2024), 112734.
 > [https://doi.org/10.1016/j.postharvbio.2023.112734](https://doi.org/10.1016/j.postharvbio.2023.112734)
 
 ---
