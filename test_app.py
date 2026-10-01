@@ -64,6 +64,17 @@ def test_invalid_request_does_not_log_email(tmp_path, monkeypatch):
     assert not database.exists()
 
 
+def test_stateless_deployment_validates_but_does_not_store_email(tmp_path, monkeypatch):
+    database = tmp_path / "privacy.sqlite3"
+    monkeypatch.setenv("PRIVACY_DB_PATH", str(database))
+    monkeypatch.setattr(webapp, "PRIVACY_STORAGE_ENABLED", False)
+    response = webapp.app.test_client().post("/", data=VALID_FORM)
+    assert response.status_code == 200
+    assert b"data:image/png;base64" in response.data
+    assert not database.exists()
+    assert b"are not stored by this deployment" in response.data
+
+
 def test_privacy_notice_is_required(tmp_path, monkeypatch):
     database = tmp_path / "privacy.sqlite3"
     monkeypatch.setenv("PRIVACY_DB_PATH", str(database))

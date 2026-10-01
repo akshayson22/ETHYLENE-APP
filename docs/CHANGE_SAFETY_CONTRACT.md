@@ -4,6 +4,6 @@ Protected behavior includes every published scientific equation and bound, the o
 
 Every change must identify scientific, API, privacy, performance, and deployment impact. Run compilation, Ruff, all tests with branch coverage at or above 77%, deterministic scientific and route contracts, dependency audit, and desktop/mobile smoke checks. Do not add external services, polling, or persistent simulation results.
 
-Release one reviewed `main` SHA, record the previous VM SHA, install the hash-locked dependencies, restart only `ethyleneprediction.service`, and verify local then public health report the exact SHA. On failure, retain bounded redacted diagnostics and restore the prior SHA without deleting the host-owned email log.
+Release one reviewed `main` SHA, record the previous VM SHA, install the hash-locked dependencies, restart only `ethyleneprediction.service`, and verify local then public health report the exact SHA. On failure, retain bounded redacted diagnostics and restore the prior SHA. The ATB profile must keep `PRIVACY_STORAGE_MODE=disabled`; it must not create an email database or persistent analysis store.
 
 Exceptions require explicit owner approval, a reason, an expiry, and follow-up. They cannot bypass secret, privacy, or scientific-contract safeguards.

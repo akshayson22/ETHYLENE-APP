@@ -6,4 +6,4 @@ Before release, run compilation, Ruff, all tests and coverage, dependency audit,
 
 The PACK-owned VM updater fast-forwards `/srv/digifruit-platform/apps/ethylene` to the reviewed `main` SHA, builds from `requirements.lock` with hashes, replaces only the `ethylene` container, and confirms the local service and `https://digifruitconsole.com/researchapplications/ethyleneprediction/` are healthy.
 
-On failure, preserve bounded redacted logs, restore the previous SHA and its locked dependencies, restart the same service, and repeat both checks. Never delete or rewrite the production email log.
+On failure, preserve bounded redacted logs, restore the previous SHA and its locked dependencies, restart the same service, and repeat both checks. The private profile may retain its bounded consent database; the ATB profile is stateless and must not create one.

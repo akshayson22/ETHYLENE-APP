@@ -1,0 +1,40 @@
+[Unit]
+Description=Ethylene Prediction (stateless ATB deployment)
+After=network.target
+
+[Service]
+User=userakshay
+Group=userakshay
+WorkingDirectory=/srv/apps/ethyleneprediction
+Environment=PRIVACY_STORAGE_MODE=disabled
+Environment=MPLCONFIGDIR=/tmp/matplotlib
+ExecStart=/srv/apps/ethyleneprediction/venv/bin/gunicorn --workers 2 --bind 127.0.0.1:8002 app:app
+Restart=always
+RestartSec=5
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=full
+ProtectHome=true
+ProtectClock=true
+ProtectHostname=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+ProtectKernelLogs=true
+ProtectProc=invisible
+ProcSubset=pid
+RestrictSUIDSGID=true
+RestrictNamespaces=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+LockPersonality=true
+RestrictRealtime=true
+SystemCallArchitectures=native
+CapabilityBoundingSet=
+AmbientCapabilities=
+RemoveIPC=true
+TasksMax=128
+
+[Install]
+WantedBy=multi-user.target

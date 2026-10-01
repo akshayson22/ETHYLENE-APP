@@ -24,6 +24,7 @@ app.config["MAX_CONTENT_LENGTH"] = 64 * 1024
 EMAIL_RE = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
 PRIVACY_NOTICE_VERSION = "2026-10-01"
 PRIVACY_RETENTION_DAYS = min(max(int(os.environ.get("PRIVACY_RETENTION_DAYS", "30")), 1), 90)
+PRIVACY_STORAGE_ENABLED = os.environ.get("PRIVACY_STORAGE_MODE", "sqlite").strip().lower() == "sqlite"
 
 
 def release_sha():
@@ -109,6 +110,8 @@ def plot_to_base64(figure):
 
 def record_privacy_acknowledgement(email):
     """Store one bounded, structured access decision; never use a plaintext log."""
+    if not PRIVACY_STORAGE_ENABLED:
+        return
     database = Path(os.environ.get("PRIVACY_DB_PATH", Path(app.instance_path) / "privacy.sqlite3"))
     database.parent.mkdir(parents=True, exist_ok=True)
     now = datetime.now(timezone.utc)
@@ -153,7 +156,8 @@ def index():
         if "reset" in request.form:
             return render_template("index.html", fields=fields, errors=[], plot1_b64=None, plot2_b64=None,
                                    extra_info=extra_info, privacy_notice_version=PRIVACY_NOTICE_VERSION,
-                                   privacy_retention_days=PRIVACY_RETENTION_DAYS)
+                                   privacy_retention_days=PRIVACY_RETENTION_DAYS,
+                                   privacy_storage_enabled=PRIVACY_STORAGE_ENABLED)
 
         # Collect values
         try:
@@ -229,6 +233,7 @@ def index():
         extra_info=extra_info,
         privacy_notice_version=PRIVACY_NOTICE_VERSION,
         privacy_retention_days=PRIVACY_RETENTION_DAYS,
+        privacy_storage_enabled=PRIVACY_STORAGE_ENABLED,
     )
 
 
