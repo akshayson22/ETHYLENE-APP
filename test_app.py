@@ -10,6 +10,8 @@ from calculations import run_simulation
 
 VALID_FORM = {
     "collector_email": "researcher@example.org",
+    "privacy_notice_ack": "on",
+    "privacy_notice_version": "2026-10-01",
     "Wp": "1",
     "StorageTemperature": "5",
     "Perforationdiamicron": "100",
@@ -21,7 +23,8 @@ VALID_FORM = {
 
 
 def test_scientific_regression_contract():
-    result = run_simulation({key: float(value) for key, value in VALID_FORM.items() if key != "collector_email"})
+    result = run_simulation({key: float(value) for key, value in VALID_FORM.items()
+                             if key not in {"collector_email", "privacy_notice_ack", "privacy_notice_version"}})
     assert result["errors"] == []
     assert len(result["TimesInDays"]) == 87
     assert float(result["Oxy_pct"][-1]) == pytest.approx(20.8322469399)
@@ -39,23 +42,37 @@ def test_health_route_and_security_headers(monkeypatch):
     assert response.headers["X-Frame-Options"] == "SAMEORIGIN"
 
 
-def test_valid_request_logs_only_after_success(tmp_path, monkeypatch):
-    log_path = tmp_path / "email-submissions.txt"
-    monkeypatch.setenv("EMAIL_LOG_PATH", str(log_path))
+def test_valid_request_records_bounded_privacy_decision(tmp_path, monkeypatch):
+    database = tmp_path / "privacy.sqlite3"
+    monkeypatch.setenv("PRIVACY_DB_PATH", str(database))
     response = webapp.app.test_client().post("/", data=VALID_FORM)
     assert response.status_code == 200
     assert b"data:image/png;base64" in response.data
-    assert "researcher@example.org" in log_path.read_text(encoding="utf-8")
+    import sqlite3
+    with sqlite3.connect(database) as connection:
+        assert connection.execute("SELECT email, notice_version, purpose FROM privacy_decisions").fetchone() == (
+            "researcher@example.org", "2026-10-01", "analysis_access")
 
 
 def test_invalid_request_does_not_log_email(tmp_path, monkeypatch):
-    log_path = tmp_path / "email-submissions.txt"
-    monkeypatch.setenv("EMAIL_LOG_PATH", str(log_path))
+    database = tmp_path / "privacy.sqlite3"
+    monkeypatch.setenv("PRIVACY_DB_PATH", str(database))
     invalid = dict(VALID_FORM, collector_email="not-an-email", Wp="invalid")
     response = webapp.app.test_client().post("/", data=invalid)
     assert response.status_code == 200
     assert b"valid email address" in response.data
-    assert not log_path.exists()
+    assert not database.exists()
+
+
+def test_privacy_notice_is_required(tmp_path, monkeypatch):
+    database = tmp_path / "privacy.sqlite3"
+    monkeypatch.setenv("PRIVACY_DB_PATH", str(database))
+    form = dict(VALID_FORM)
+    form.pop("privacy_notice_ack")
+    response = webapp.app.test_client().post("/", data=form)
+    assert response.status_code == 200
+    assert b"acknowledge the current privacy notice" in response.data
+    assert not database.exists()
 
 
 def test_body_and_rate_limits(monkeypatch):

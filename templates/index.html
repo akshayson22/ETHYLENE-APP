@@ -7,6 +7,8 @@
 
         <form method="post" class="input-form">
           <input type="hidden" name="collector_email" value="" />
+          <input type="hidden" name="privacy_notice_ack" value="" />
+          <input type="hidden" name="privacy_notice_version" value="{{ privacy_notice_version }}" />
 
           <div class="field-stack">
             <div class="field">
@@ -122,11 +124,12 @@
     <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="email-modal-title">
       <button type="button" class="modal-close" data-email-cancel aria-label="Close email prompt">&times;</button>
       <h2 id="email-modal-title" class="modal-title">Enter email address</h2>
-      <p class="modal-copy">Please provide your email before running the analysis.</p>
+      <p class="modal-copy">DigiFruit is an independently operated, pre-commercial research platform, not a registered company. No paid service is offered here. Your email and this acknowledgement are retained for {{ privacy_retention_days }} days only to document access. Analysis inputs are used to produce the requested result. Necessary security/session storage may be used; no analytics or marketing cookies are enabled.</p>
 
       <form class="modal-form" data-email-modal-form>
         <label class="modal-label" for="analysis-email">Email address</label>
         <input id="analysis-email" name="modal_email" type="email" autocomplete="email" placeholder="name@example.com" required />
+        <label class="modal-copy"><input name="modal_privacy_ack" type="checkbox" required /> I have read the privacy notice (version {{ privacy_notice_version }}) and acknowledge this processing.</label>
 
         <div class="modal-actions">
           <button type="button" class="btn ghost" data-email-cancel>Cancel</button>

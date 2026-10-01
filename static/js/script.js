@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.querySelector(".input-form");
   const updateButton = form?.querySelector('button[name="update"]');
   const hiddenEmailInput = form?.querySelector('input[name="collector_email"]');
+  const hiddenPrivacyInput = form?.querySelector('input[name="privacy_notice_ack"]');
   const modal = document.querySelector("[data-email-modal]");
   const modalForm = document.querySelector("[data-email-modal-form]");
   const modalEmailInput = modalForm?.querySelector('input[name="modal_email"]');
@@ -75,6 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       hiddenEmailInput.value = modalEmailInput.value.trim();
+      if (hiddenPrivacyInput) hiddenPrivacyInput.value = "on";
       allowUpdateSubmit = true;
       modal.hidden = true;
       form.requestSubmit(updateButton);

@@ -1,8 +1,8 @@
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 import os
 import re
-import tempfile
+import sqlite3
 import threading
 import time
 from collections import OrderedDict, deque
@@ -21,9 +21,9 @@ app = Flask(
 )
 app.config["MAX_CONTENT_LENGTH"] = 64 * 1024
 
-EMAIL_LOG_FILENAME = "email_submission_log.txt"
-EMAIL_LOG_HEADER = "# Timestamp (ISO 8601 with timezone)\tEmail\n"
 EMAIL_RE = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
+PRIVACY_NOTICE_VERSION = "2026-10-01"
+PRIVACY_RETENTION_DAYS = min(max(int(os.environ.get("PRIVACY_RETENTION_DAYS", "30")), 1), 90)
 
 
 def release_sha():
@@ -107,48 +107,28 @@ def plot_to_base64(figure):
     buf.seek(0)
     return base64.b64encode(buf.read()).decode("utf-8")
 
-def iter_email_log_paths():
-    seen = set()
-    configured_path = os.environ.get("EMAIL_LOG_PATH", "").strip()
-    candidates = []
-
-    if configured_path:
-        candidates.append(Path(configured_path).expanduser())
-
-    candidates.extend([
-        Path(__file__).resolve().parent / EMAIL_LOG_FILENAME,
-        Path(app.instance_path) / EMAIL_LOG_FILENAME,
-        Path.cwd() / EMAIL_LOG_FILENAME,
-        Path(tempfile.gettempdir()) / EMAIL_LOG_FILENAME,
-    ])
-
-    for candidate in candidates:
-        resolved = str(candidate)
-        if resolved in seen:
-            continue
-        seen.add(resolved)
-        yield candidate
-
-def append_email_submission(email):
-    timestamp = datetime.now().astimezone().isoformat(timespec="seconds")
-    entry = f"{timestamp}\t{email}\n"
-    last_error = None
-
-    # Try the project log first, then fall back to writable runtime locations.
-    for log_path in iter_email_log_paths():
-        try:
-            log_path.parent.mkdir(parents=True, exist_ok=True)
-            file_exists = log_path.exists()
-            with log_path.open("a", encoding="utf-8") as log_file:
-                if not file_exists:
-                    log_file.write(EMAIL_LOG_HEADER)
-                log_file.write(entry)
-            app.logger.info("Logged email submission to %s", log_path)
-            return
-        except OSError as exc:
-            last_error = exc
-
-    app.logger.warning("Failed to log email submission for %s: %s", email, last_error)
+def record_privacy_acknowledgement(email):
+    """Store one bounded, structured access decision; never use a plaintext log."""
+    database = Path(os.environ.get("PRIVACY_DB_PATH", Path(app.instance_path) / "privacy.sqlite3"))
+    database.parent.mkdir(parents=True, exist_ok=True)
+    now = datetime.now(timezone.utc)
+    expires_at = now + timedelta(days=PRIVACY_RETENTION_DAYS)
+    with sqlite3.connect(database) as connection:
+        connection.execute(
+            "CREATE TABLE IF NOT EXISTS privacy_decisions ("
+            "id INTEGER PRIMARY KEY, email TEXT NOT NULL, notice_version TEXT NOT NULL, "
+            "purpose TEXT NOT NULL, acknowledged_at TEXT NOT NULL, withdrawn_at TEXT, expires_at TEXT NOT NULL)"
+        )
+        connection.execute("DELETE FROM privacy_decisions WHERE expires_at <= ?", (now.isoformat(),))
+        connection.execute(
+            "INSERT INTO privacy_decisions(email,notice_version,purpose,acknowledged_at,expires_at) "
+            "VALUES (?,?,'analysis_access',?,?)",
+            (email, PRIVACY_NOTICE_VERSION, now.isoformat(), expires_at.isoformat()),
+        )
+    try:
+        database.chmod(0o600)
+    except OSError:
+        app.logger.warning("Could not restrict privacy database permissions: %s", database)
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -171,13 +151,17 @@ def index():
     if request.method == "POST":
         # Reset action
         if "reset" in request.form:
-            return render_template("index.html", fields=fields, errors=[], plot1_b64=None, plot2_b64=None, extra_info=extra_info)
+            return render_template("index.html", fields=fields, errors=[], plot1_b64=None, plot2_b64=None,
+                                   extra_info=extra_info, privacy_notice_version=PRIVACY_NOTICE_VERSION,
+                                   privacy_retention_days=PRIVACY_RETENTION_DAYS)
 
         # Collect values
         try:
             collector_email = request.form.get("collector_email", "").strip()
             if len(collector_email) > 254 or not EMAIL_RE.fullmatch(collector_email):
                 raise ValueError("A valid email address is required before updating plots.")
+            if request.form.get("privacy_notice_ack") != "on" or request.form.get("privacy_notice_version") != PRIVACY_NOTICE_VERSION:
+                raise ValueError("Please acknowledge the current privacy notice before running the analysis.")
 
             fields["Wp"] = request.form.get("Wp", "").strip()
             fields["StorageTemperature"] = request.form.get("StorageTemperature", "").strip()
@@ -202,7 +186,7 @@ def index():
             errors = result.get("errors", [])
 
             if not errors:
-                append_email_submission(collector_email)
+                record_privacy_acknowledgement(collector_email)
                 # Plot 1: O2 + CO2
                 fig1 = plt.figure(figsize=(6, 4))
                 ax1 = fig1.add_subplot(111)
@@ -242,7 +226,9 @@ def index():
         errors=errors,
         plot1_b64=plot1_b64,
         plot2_b64=plot2_b64,
-        extra_info=extra_info
+        extra_info=extra_info,
+        privacy_notice_version=PRIVACY_NOTICE_VERSION,
+        privacy_retention_days=PRIVACY_RETENTION_DAYS,
     )
 
 
